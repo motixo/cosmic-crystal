@@ -86,7 +86,7 @@ void main() {
         vec4 sharp_middle = texture2D(sharp_tex, green_uv);
         vec4 sharp = vec4(texture2D(sharp_tex, red_uv).r, sharp_middle.g,
                           texture2D(sharp_tex, blue_uv).b, sharp_middle.a);
-        float diffusion = smoothstep(0.0, 0.45, blur_amount) * mix(1.0, 0.45, edge);
+        float diffusion = smoothstep(0.0, 0.45, blur_amount);
         color = mix(sharp, color, diffusion);
     }
     #if defined(NO_ALPHA)
