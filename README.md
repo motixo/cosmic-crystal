@@ -53,6 +53,11 @@ Crystal, Aero and Liquid Glass have independent **Theme color** controls. They
 adjust the tint strength without changing opacity. Crystal starts at 0% to retain
 its existing appearance, and its tint follows COSMIC's light or dark surface color.
 
+Crystal also has independent **Dispersion**, from 0 to 10 px at 100% refraction.
+It scales with refraction and the local facet strength; 0 removes wavelength
+separation, and the default of 1 preserves the previous appearance. Sampling stays
+within the compositor's existing background capture, including at maximum strength.
+
 Community authors can build a separate pack:
 
 ```sh

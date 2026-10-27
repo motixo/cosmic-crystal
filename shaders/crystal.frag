@@ -28,6 +28,7 @@ uniform float crystal_thickness;
 uniform float everyday_mode;
 uniform vec3 theme_tint;
 uniform float forge_crystal_color;
+uniform float forge_crystal_dispersion;
 
 vec2 hash2(vec2 p) {
     vec3 p3 = fract(vec3(p.xyx) * vec3(0.1031, 0.1030, 0.0973));
@@ -115,10 +116,13 @@ void main() {
     displacement *= crystal_weight;
     vec2 safe_min = uv_per_pixel * 0.5;
     vec2 safe_max = vec2(1.0) - safe_min;
-    // Small wavelength separation, strongest at the cut edges.
-    vec2 red_uv = clamp(v_coords + displacement * 1.025 * uv_per_pixel, safe_min, safe_max);
+    float dispersion = clamp(forge_crystal_dispersion, 0.0, 10.0) / 40.0;
+    vec2 red_displacement = displacement * (1.0 + dispersion);
+    // Stronger separation must stay inside the existing background capture.
+    red_displacement *= min(1.0, 41.0 * refraction_strength / max(length(red_displacement), 0.0001));
+    vec2 red_uv = clamp(v_coords + red_displacement * uv_per_pixel, safe_min, safe_max);
     vec2 green_uv = clamp(v_coords + displacement * uv_per_pixel, safe_min, safe_max);
-    vec2 blue_uv = clamp(v_coords + displacement * 0.975 * uv_per_pixel, safe_min, safe_max);
+    vec2 blue_uv = clamp(v_coords + displacement * (1.0 - dispersion) * uv_per_pixel, safe_min, safe_max);
     vec4 middle = texture2D(tex, green_uv);
     vec4 color = vec4(texture2D(tex, red_uv).r, middle.g, texture2D(tex, blue_uv).b, middle.a);
     float surface_roughness = blur_amount > 0.0 ? 1.0 : 0.0;

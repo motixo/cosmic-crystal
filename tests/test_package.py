@@ -13,16 +13,21 @@ spec.loader.exec_module(publisher)
 
 
 class PublisherTests(unittest.TestCase):
-    def test_crystal_color_override_keeps_the_native_fallback_catalog(self):
+    def test_crystal_controls_keep_the_native_fallback_catalog(self):
         builtins = json.loads((ROOT / 'effects.json').read_text())
         old = next(e for e in builtins if e['id'] == 'crystal')
         pack = publisher.bundle(4)
         crystal = next(e for e in pack['effects'] if e['id'] == 'crystal')
-        self.assertEqual(len(crystal['controls']), len(old['controls']) + 1)
+        self.assertEqual(len(crystal['controls']), len(old['controls']) + 2)
         color = next(c for c in crystal['controls'] if c['key'] == 'forge_crystal_color')
         self.assertEqual((color['min'], color['max'], color['default']), (0, 100, 0))
-        self.assertEqual(crystal['shader']['uniforms'], {'forge_crystal_color': 'forge_crystal_color'})
-        self.assertFalse(any(c['key'] == 'forge_crystal_color' for c in old['controls']))
+        dispersion = next(c for c in crystal['controls'] if c['key'] == 'forge_crystal_dispersion')
+        self.assertEqual((dispersion['min'], dispersion['max'], dispersion['default']), (0, 10, 1))
+        self.assertEqual(crystal['shader']['uniforms'], {
+            'forge_crystal_color': 'forge_crystal_color',
+            'forge_crystal_dispersion': 'forge_crystal_dispersion',
+        })
+        self.assertFalse(any(c['key'].startswith('forge_crystal_') for c in old['controls']))
 
     def test_generic_glass_example_uses_the_neutral_template(self):
         directory = ROOT / 'examples/plain-glass'
