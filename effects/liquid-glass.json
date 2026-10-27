@@ -1,0 +1,93 @@
+{
+  "id": "liquid-glass",
+  "name": "Liquid Glass",
+  "tagline": "Soft curves, liquid light.",
+  "description": "Thick, curved glass with broad lensing, a clear center and a subtle color split along the rim.",
+  "controls": [
+    {
+      "key": "forge_liquid_blur",
+      "label": "Blur",
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 12,
+      "unit": "%"
+    },
+    {
+      "key": "forge_liquid_refraction",
+      "label": "Lensing",
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 80,
+      "unit": "%"
+    },
+    {
+      "key": "forge_liquid_clear_center",
+      "label": "Clear center",
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 40,
+      "unit": "%"
+    },
+    {
+      "key": "forge_liquid_thickness",
+      "label": "Thickness",
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 100,
+      "unit": "%"
+    },
+    {
+      "key": "forge_liquid_dispersion",
+      "label": "Dispersion",
+      "type": "integer",
+      "min": 0,
+      "max": 10,
+      "default": 5,
+      "unit": "px"
+    },
+    {
+      "key": "forge_liquid_highlights",
+      "label": "Highlights",
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 20,
+      "unit": "%"
+    },
+    {
+      "key": "forge_liquid_color",
+      "label": "Theme color",
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 0,
+      "unit": "%"
+    },
+    {
+      "key": "alpha_map",
+      "target": "theme",
+      "label": "Opacity",
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "unit": "%"
+    }
+  ],
+  "shader": {
+    "base": "glass",
+    "uniforms": {
+      "forge_blur": "forge_liquid_blur",
+      "forge_liquid_thickness": "forge_liquid_thickness",
+      "forge_liquid_refraction": "forge_liquid_refraction",
+      "forge_liquid_clear_center": "forge_liquid_clear_center",
+      "forge_liquid_dispersion": "forge_liquid_dispersion",
+      "forge_liquid_highlights": "forge_liquid_highlights",
+      "forge_liquid_color": "forge_liquid_color"
+    }
+  }
+}

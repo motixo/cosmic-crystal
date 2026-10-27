@@ -1,6 +1,6 @@
 # COSMIC Forge Shaders
 
-Glass effects for **COSMIC Forge**: Crystal, Aero and the definition for COSMIC's
+Glass effects for **COSMIC Forge**: Crystal, Aero, Liquid Glass and the definition for COSMIC's
 native Frosted Glass. This is the former `cosmic-crystal` repository, renamed with
 its history and releases intact.
 
@@ -17,6 +17,7 @@ retained in [v0.8.0](https://github.com/motixo/cosmic-forge-shaders/tree/v0.8.0)
 - `effects.json`: built-in effect descriptions and controls.
 - `shaders/crystal.frag`: Crystal refraction, frost and Everyday mode.
 - `shaders/aero.frag`: Aero glass, reflections and theme tint.
+- `shaders/liquid-glass.frag`: curved refraction and soft edge highlights on the generic glass base.
 - `shaders/glass.frag`: neutral generic glass template with independent blur.
 - `effects/*.json`: optional additional glass effect definitions.
 - `examples/`: an importable Prism pack and a separate JSON + `.frag` example.
@@ -97,3 +98,19 @@ The example stays outside the official catalog so the existing release feed
 remains compatible with older Forge apps. Glass packs require Forge 0.5+.
 Detailed shader inputs and creation steps are documented in
 [adding effects](https://github.com/motixo/cosmic-forge/blob/main/docs/adding-effects.md).
+
+Liquid Glass uses this base for broad, curved refraction inspired by
+[this ShojiWM configuration](https://github.com/bea4dev/liquid-glass-config-shojiwm).
+The lens displacement scales with the surface size, with adjustable chromatic
+dispersion near the rim. Lensing adjusts the geometric distortion, from 0% (no
+distortion) to 100% (full lensing), without changing its tint or opacity.
+Clear center sets the size of the undistorted middle: lower values let lensing
+reach further inward; higher values restrict it to the edges. At 100% the entire
+surface is free of lens distortion. Blur remains independent.
+Blur, thickness, dispersion and highlights have independent controls;
+opacity remains shared. This is a shader-only interpretation, without pointer
+tracking or morphing animations. Try the source pair in Forge 0.5+ with renderer 2:
+
+```sh
+cosmic-forge --import-pack effects/liquid-glass.json shaders/liquid-glass.frag
+```
