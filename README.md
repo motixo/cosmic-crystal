@@ -14,6 +14,7 @@ retained in [v0.8.0](https://github.com/motixo/cosmic-forge-shaders/tree/v0.8.0)
 - `effects.json`: built-in effect descriptions and controls.
 - `shaders/crystal.frag`: Crystal refraction, frost and Everyday mode.
 - `shaders/aero.frag`: Aero glass, reflections and theme tint.
+- `shaders/glass.frag`: neutral generic glass template with independent blur.
 - `effects/*.json`: optional additional glass effect definitions.
 - `examples/`: an importable Prism pack and a separate JSON + `.frag` example.
 - `scripts/package_effects.py`: combines metadata and GLSL into a release asset.
@@ -36,7 +37,7 @@ To add a glass effect, add its definition to `effects/<id>.json` and GLSL to
 `shaders/<id>.frag`. The definition follows an entry in `effects.json`, including
 `id`, `name`, `tagline`, `description`, `preview`, `controls` and an optional
 `shader.uniforms` map from custom float uniform names to control keys. Choose
-`aero` or `crystal` as the base pipeline. Custom control keys and uniform names
+`glass`, `aero` or `crystal` as the base pipeline. Custom control keys and uniform names
 start with `forge_`; source is limited to 64 KiB. See the Prism example for a
 complete definition. A complete pack can also be imported through Forge settings,
 or select its JSON metadata and `.frag` together.
@@ -71,3 +72,25 @@ Its pinned commit supplies built-in definitions at compile time; installed apps
 download release packs independently of Git.
 
 GPL-3.0-only. Independent project; COSMIC is developed by System76 and its contributors.
+
+## Generic glass
+
+Forge 0.5+ and engine renderer revision 2 add `shader.base: "glass"`. The neutral
+template supplies sharp/blurred background textures, geometry, output scale and
+theme colors. It has no fixed tint, reflections or facets. Map `forge_blur` to a
+unique per-effect integer control key in 0–100; it controls the blur pipeline and
+defaults to 45 if absent. Opacity stays shared. Other custom float uniforms work
+as usual. An invalid source falls back to neutral glass.
+
+```sh
+cosmic-forge --import-pack examples/plain-glass/plain-glass.json \
+  examples/plain-glass/plain-glass.frag
+python scripts/package_effects.py --catalog examples/plain-glass/plain-glass.json \
+  --shader-dir examples/plain-glass --pack-id plain-glass --revision 1 \
+  --output build/plain-glass.json
+```
+
+The example stays outside the official catalog so the existing release feed
+remains compatible with older Forge apps. Glass packs require Forge 0.5+.
+Detailed shader inputs and creation steps are documented in
+[adding effects](https://github.com/motixo/cosmic-forge/blob/main/docs/adding-effects.md).

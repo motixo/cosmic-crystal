@@ -1,0 +1,41 @@
+{
+  "format": 1,
+  "id": "plain-glass",
+  "revision": 1,
+  "effects": [
+    {
+      "id": "plain-glass",
+      "name": "Plain Glass",
+      "tagline": "A neutral base for your own glass effects.",
+      "description": "Generic glass with independent blur. Edit the fragment shader to create your own effect.",
+      "controls": [
+        {
+          "key": "forge_plain_blur",
+          "label": "Blur",
+          "type": "integer",
+          "min": 0,
+          "max": 100,
+          "default": 45,
+          "unit": "%"
+        },
+        {
+          "key": "alpha_map",
+          "target": "theme",
+          "label": "Opacity",
+          "type": "integer",
+          "min": 0,
+          "max": 100,
+          "default": 50,
+          "unit": "%"
+        }
+      ],
+      "shader": {
+        "base": "glass",
+        "uniforms": {
+          "forge_blur": "forge_plain_blur"
+        },
+        "source": "// SPDX-License-Identifier: GPL-3.0-only\n// Neutral glass template; no built-in tint, reflections or refraction.\n// Geometry clipping follows COSMIC's clipped_surface.frag.\n#version 100\n//_DEFINES_\n#if defined(EXTERNAL)\n#extension GL_OES_EGL_image_external : require\n#endif\nprecision highp float;\n#if defined(EXTERNAL)\nuniform samplerExternalOES tex;\n#else\nuniform sampler2D tex;\n#endif\nuniform sampler2D sharp_tex;\nuniform float alpha;\nvarying vec2 v_coords;\n#if defined(DEBUG_FLAGS)\nuniform float tint;\n#endif\nuniform vec2 geo_size;\nuniform vec4 corner_radius;\nuniform mat3 input_to_geo;\nuniform float blur_amount;\nuniform vec2 uv_per_pixel;\nuniform float output_scale;\nuniform vec3 theme_tint;\nuniform vec3 theme_accent;\n\nvoid main() {\n    if (alpha <= 0.0) discard;\n    vec2 g = (input_to_geo * vec3(v_coords, 1.0)).xy;\n    if (g.x < 0.0 || g.y < 0.0 || g.x > 1.0 || g.y > 1.0) discard;\n    vec2 p = g * geo_size;\n    float radius = g.x < 0.5\n        ? (g.y < 0.5 ? corner_radius.x : corner_radius.w)\n        : (g.y < 0.5 ? corner_radius.y : corner_radius.z);\n    vec2 center = p - geo_size * 0.5;\n    vec2 q = abs(center) - geo_size * 0.5 + radius;\n    float inside = -(length(max(q, vec2(0.0))) + min(max(q.x, q.y), 0.0) - radius);\n    float mask = smoothstep(-0.5, 0.5, inside);\n    if (mask <= 0.0) discard;\n\n    vec4 color = texture2D(tex, v_coords);\n    #if defined(NO_ALPHA)\n    color.a = 1.0;\n    #endif\n    color *= mask * alpha;\n    #if defined(DEBUG_FLAGS)\n    if (tint == 1.0) color = vec4(0.0, 0.2, 0.0, 0.2) + color * 0.8;\n    #endif\n    gl_FragColor = color;\n}\n"
+      }
+    }
+  ]
+}

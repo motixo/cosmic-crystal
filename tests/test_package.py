@@ -13,6 +13,14 @@ spec.loader.exec_module(publisher)
 
 
 class PublisherTests(unittest.TestCase):
+    def test_generic_glass_example_uses_the_neutral_template(self):
+        directory = ROOT / 'examples/plain-glass'
+        pack = publisher.bundle(1, directory / 'plain-glass.json', 'plain-glass', directory)
+        shader = pack['effects'][0]['shader']
+        self.assertEqual(shader['base'], 'glass')
+        self.assertEqual(shader['uniforms'], {'forge_blur': 'forge_plain_blur'})
+        self.assertEqual(shader['source'], (ROOT / 'shaders/glass.frag').read_text())
+
     def test_official_bundle_contains_all_glass_shader_sources(self):
         pack = publisher.bundle(5)
         self.assertEqual(pack['revision'], 5)
