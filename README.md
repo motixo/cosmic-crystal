@@ -1,54 +1,70 @@
-# COSMIC Crystal
+# COSMIC Forge Shaders
 
-A crystal glass effect for **COSMIC 1.10.0 and 1.11.0**, on **Arch Linux, Fedora, Ubuntu and Pop!_OS**.
+Glass effects for **COSMIC Forge**: Crystal, Aero and the definition for COSMIC's
+native Frosted Glass. This is the former `cosmic-crystal` repository, renamed with
+its history and releases intact.
 
-Faceted light refraction, adjustable frost, thickness and density. **Everyday mode** keeps reading areas calm and concentrates the effect near window edges. Works wherever COSMIC enables Frosted Glass.
+This repository contains effect data and GLSL, plus a Python pack builder. It does
+not patch, build or install the compositor or COSMIC Settings. Renderer setup and
+restoration belong to the Forge app. Existing standalone Crystal installers are
+retained in [v0.8.0](https://github.com/motixo/cosmic-forge-shaders/tree/v0.8.0).
 
-![COSMIC Crystal](assets/screenshot.png)
+## Contents
 
-## Install
+- `effects.json`: built-in effect descriptions and controls.
+- `shaders/crystal.frag`: Crystal refraction, frost and Everyday mode.
+- `shaders/aero.frag`: Aero glass, reflections and theme tint.
+- `effects/*.json`: optional additional glass effect definitions.
+- `examples/`: an importable Prism pack and a separate JSON + `.frag` example.
+- `scripts/package_effects.py`: combines metadata and GLSL into a release asset.
 
-```sh
-curl -fsSL https://raw.githubusercontent.com/motixo/cosmic-crystal/v0.8.0/install-online.sh | sh
-```
+Frosted Glass uses COSMIC's native pipeline, so it has no `.frag` file here.
 
-Run as your desktop user, **without sudo**, then log out and back in. Open **Settings → Desktop → Appearance → COSMIC Crystal**.
+## Build a pack
 
-Requires matching native `cosmic-comp` and `cosmic-settings` packages, `curl`, `tar`, and Python 3. Prebuilt downloads target x86_64, with glibc **2.44+ on Arch** or **2.42+ on Fedora**, or **2.39+ on Ubuntu/Pop!_OS (24.04+)**. The installer selects the matching archive, checks SHA-256, and saves previous launchers for removal. Keep `~/.local/bin` before `/usr/bin` in your login PATH.
-
-## Build — Arch, Fedora, Ubuntu and Pop!_OS
-
-```sh
-git clone https://github.com/motixo/cosmic-crystal.git
-cd cosmic-crystal
-sudo sh scripts/dependencies.sh
-./build-from-source.sh --jobs 4
-```
-
-The dependency script uses `pacman`, `dnf`, or `apt` for your distribution. Build and installation run as your normal user. Requires Rust 1.93+; sources are pinned to the installed COSMIC version.
-
-On Ubuntu/Pop!_OS, install a newer Rust toolchain if `rustc --version` is below 1.93:
+Requires Python 3.11+; no third-party Python dependencies.
 
 ```sh
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal
-. "$HOME/.cargo/env"
+python -m unittest discover -s tests -v
+python scripts/package_effects.py --revision 1
+cosmic-forge --import-pack build/effects/cosmic-forge-glass.json
 ```
 
-Build without installing:
+To add a glass effect, add its definition to `effects/<id>.json` and GLSL to
+`shaders/<id>.frag`. The definition follows an entry in `effects.json`, including
+`id`, `name`, `tagline`, `description`, `preview`, `controls` and an optional
+`shader.uniforms` map from custom float uniform names to control keys. Choose
+`aero` or `crystal` as the base pipeline. Custom control keys and uniform names
+start with `forge_`; source is limited to 64 KiB. See the Prism example for a
+complete definition. A complete pack can also be imported through Forge settings,
+or select its JSON metadata and `.frag` together.
+
+Community authors can build a separate pack:
 
 ```sh
-./build-from-source.sh --build-only --jobs 4
-./install.sh --build-dir ./build
+python scripts/package_effects.py --catalog examples/prism-files/prism.json \
+  --shader-dir examples/prism-files --pack-id prism-demo --revision 1 \
+  --output build/prism.json
 ```
 
-Use `--cosmic-version 1.11.0 --build-only` to build another supported version. Complete source archives, including Rust dependencies and an offline build script, are in [Releases](https://github.com/motixo/cosmic-crystal/releases).
+## Publish an update
 
-## Uninstall
+Increase the positive pack revision for each change, then tag the tested source:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/motixo/cosmic-crystal/v0.8.0/install-online.sh | sh -s -- --uninstall
+git tag glass-v2
+git push origin glass-v2
 ```
 
-Log out and back in. Previous launchers and unchanged preferences are restored.
+The release workflow builds `cosmic-forge-glass.json` using that revision and
+publishes it on the tagged stable GitHub release. Forge checks this repository on
+startup and every six hours while open, and verifies the asset's SHA-256 digest
+before installation. Users can also choose **Check for updates** in Forge settings.
+The official pack id remains `cosmic-glass`; community packs are kept separately.
+Compatible shader updates do not rebuild the compositor or change desktop launchers.
+
+Forge's source checkout includes this repository as the `shaders` Git submodule.
+Its pinned commit supplies built-in definitions at compile time; installed apps
+download release packs independently of Git.
 
 GPL-3.0-only. Independent project; COSMIC is developed by System76 and its contributors.

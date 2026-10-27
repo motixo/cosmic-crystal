@@ -1,7 +1,13 @@
-name: Checks
-on: [push, pull_request]
+name: Glass packs
+on:
+  push:
+    branches: ['**']
+    tags: ['glass-v*']
+  pull_request:
+permissions:
+  contents: read
 jobs:
-  installer:
+  check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -9,4 +15,24 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m unittest discover -s tests -v
-      - run: sh -n install.sh uninstall.sh install-online.sh build-from-source.sh scripts/dependencies.sh
+      - run: python scripts/package_effects.py --revision 1
+  release:
+    if: startsWith(github.ref, 'refs/tags/glass-v')
+    needs: check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Build and publish glass pack
+        env:
+          TAG: ${{ github.ref_name }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python scripts/package_effects.py --revision "${TAG#glass-v}"
+          gh release create "$TAG" build/effects/cosmic-forge-glass.json \
+            --verify-tag --latest --title "Forge glass pack ${TAG#glass-v}" \
+            --notes "Crystal, Aero and native Frosted Glass definitions for COSMIC Forge ABI 1. Shader data only; no compositor or Settings installer."
