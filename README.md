@@ -4,6 +4,9 @@ Glass effects for **COSMIC Forge**: Crystal, Aero and the definition for COSMIC'
 native Frosted Glass. This is the former `cosmic-crystal` repository, renamed with
 its history and releases intact.
 
+[Install COSMIC Forge](https://github.com/motixo/cosmic-forge#install) with the
+one-line installer or native DEB, RPM and Arch packages, then select or import effects in the app.
+
 This repository contains effect data and GLSL, plus a Python pack builder. It does
 not patch, build or install the compositor or COSMIC Settings. Renderer setup and
 restoration belong to the Forge app. Existing standalone Crystal installers are
