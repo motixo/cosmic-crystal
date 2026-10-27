@@ -27,6 +27,7 @@ uniform float blur_amount;
 uniform float crystal_thickness;
 uniform float everyday_mode;
 uniform vec3 theme_tint;
+uniform float forge_crystal_color;
 
 vec2 hash2(vec2 p) {
     vec3 p3 = fract(vec3(p.xyx) * vec3(0.1031, 0.1030, 0.0973));
@@ -233,6 +234,8 @@ void main() {
         protection += (1.0 - protection) * absorption * tone_mode;
         color.rgb = mix(straight, pow(toned, vec3(1.0 / 2.2)), protection) * color.a;
     }
+    color.rgb = mix(color.rgb, clamp(theme_tint, 0.0, 1.0) * color.a,
+        clamp(forge_crystal_color / 100.0, 0.0, 1.0) * 0.65);
     color *= mask * alpha;
     #if defined(DEBUG_FLAGS)
     if (tint == 1.0) color = vec4(0.0, 0.2, 0.0, 0.2) + color * 0.8;

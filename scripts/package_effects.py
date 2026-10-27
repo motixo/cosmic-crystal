@@ -12,7 +12,13 @@ def bundle(revision, catalog=None, pack_id='cosmic-glass', shaders=None):
     effects = definitions.get('effects', [definitions]) if isinstance(definitions, dict) else definitions
     if catalog is None:
         for path in sorted((ROOT / 'effects').glob('*.json')):
-            effects.append(json.loads(path.read_text()))
+            effect = json.loads(path.read_text())
+            for index, existing in enumerate(effects):
+                if existing['id'] == effect['id']:
+                    effects[index] = effect
+                    break
+            else:
+                effects.append(effect)
     for effect in effects:
         shader = (shaders or ROOT / 'shaders') / (effect['id'] + '.frag')
         if shader.exists():

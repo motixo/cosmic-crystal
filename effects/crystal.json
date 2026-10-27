@@ -1,0 +1,83 @@
+{
+  "id": "crystal",
+  "name": "Crystal",
+  "tagline": "Light, cut into glass.",
+  "description": "Uneven facets, refracted light and a little depth. Make it expressive, or keep a calm center for everyday work.",
+  "preview": "crystal",
+  "controls": [
+    {
+      "key": "crystal_everyday",
+      "label": "Everyday mode",
+      "description": "A calmer reading center with reflections near the edges.",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "key": "crystal_blur_amount",
+      "label": "Frost",
+      "description": "From clear crystal to a fully diffused surface.",
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 70,
+      "unit": "%",
+      "legacy": "crystal_blur"
+    },
+    {
+      "key": "crystal_thickness",
+      "label": "Thickness",
+      "description": "Add internal depth and light scattering.",
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 40,
+      "unit": "%"
+    },
+    {
+      "key": "crystal_refraction",
+      "label": "Refraction",
+      "description": "How strongly the glass bends the backdrop.",
+      "type": "integer",
+      "min": 0,
+      "max": 250,
+      "default": 150,
+      "unit": "%"
+    },
+    {
+      "key": "crystal_density",
+      "label": "Facet density",
+      "description": "Fewer broad faces or more fine crystal cuts.",
+      "type": "integer",
+      "min": 25,
+      "max": 250,
+      "default": 100,
+      "unit": "%"
+    },
+    {
+      "key": "forge_crystal_color",
+      "label": "Theme color",
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 0,
+      "unit": "%"
+    },
+    {
+      "key": "alpha_map",
+      "target": "theme",
+      "label": "Opacity",
+      "description": "Shared across Frosted Glass, Crystal and Aero.",
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "unit": "%"
+    }
+  ],
+  "shader": {
+    "base": "crystal",
+    "uniforms": {
+      "forge_crystal_color": "forge_crystal_color"
+    }
+  }
+}

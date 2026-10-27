@@ -19,7 +19,7 @@ retained in [v0.8.0](https://github.com/motixo/cosmic-forge-shaders/tree/v0.8.0)
 - `shaders/aero.frag`: Aero glass, reflections and theme tint.
 - `shaders/liquid-glass.frag`: curved refraction and soft edge highlights on the generic glass base.
 - `shaders/glass.frag`: neutral generic glass template with independent blur.
-- `effects/*.json`: optional additional glass effect definitions.
+- `effects/*.json`: additional glass definitions and overrides for the release pack.
 - `examples/`: an importable Prism pack and a separate JSON + `.frag` example.
 - `scripts/package_effects.py`: combines metadata and GLSL into a release asset.
 
@@ -45,6 +45,13 @@ To add a glass effect, add its definition to `effects/<id>.json` and GLSL to
 start with `forge_`; source is limited to 64 KiB. See the Prism example for a
 complete definition. A complete pack can also be imported through Forge settings,
 or select its JSON metadata and `.frag` together.
+In the official pack, a definition with an existing id replaces that entry while
+preserving its position. This keeps downloadable controls separate from Forge's
+built-in fallback catalog.
+
+Crystal, Aero and Liquid Glass have independent **Theme color** controls. They
+adjust the tint strength without changing opacity. Crystal starts at 0% to retain
+its existing appearance, and its tint follows COSMIC's light or dark surface color.
 
 Community authors can build a separate pack:
 
