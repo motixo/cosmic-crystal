@@ -27,8 +27,10 @@ Requires Python 3.11+; no third-party Python dependencies.
 ```sh
 python -m unittest discover -s tests -v
 python scripts/package_effects.py --revision 1
-cosmic-forge --import-pack build/effects/cosmic-forge-glass.json
 ```
+
+The generated official pack is installed through Forge's verified GitHub update
+feed; its reserved pack id cannot be imported as a local community pack.
 
 To add a glass effect, add its definition to `effects/<id>.json` and GLSL to
 `shaders/<id>.frag`. The definition follows an entry in `effects.json`, including
@@ -45,6 +47,7 @@ Community authors can build a separate pack:
 python scripts/package_effects.py --catalog examples/prism-files/prism.json \
   --shader-dir examples/prism-files --pack-id prism-demo --revision 1 \
   --output build/prism.json
+cosmic-forge --import-pack build/prism.json
 ```
 
 ## Publish an update
