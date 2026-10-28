@@ -59,13 +59,8 @@ void main() {
     float edge = 1.0 - smoothstep(0.0, bevel_width, inside);
     float clear_center = clamp(forge_liquid_clear_center / 100.0, 0.0, 1.0);
     float lens_width = max(0.5, short_side * 0.5 * (1.0 - clear_center));
-    // The optical lens is rounder than the window's clipping outline.
-    float lens_radius = max(radius, min(150.0, short_side * 0.5));
-    vec2 lens_q = abs(center) - geo_size * 0.5 + lens_radius;
-    float lens_inside = lens_radius - length(max(lens_q, vec2(0.0)))
-        - min(max(lens_q.x, lens_q.y), 0.0);
-    float lens_position = clamp(1.0 - max(lens_inside, 0.0) / lens_width, 0.0, 1.0);
-    // Extend the lens through the corners; only the real window mask clips it.
+    // Lensing follows the same outline as clipping, avoiding a second corner seam.
+    float lens_position = clamp(1.0 - max(inside, 0.0) / lens_width, 0.0, 1.0);
     float lens_curve = (1.0 - sqrt(max(0.0, 1.0 - lens_position * lens_position)))
         * (1.0 - step(1.0, clear_center));
     vec2 radial = center / max(max(geo_size.x, geo_size.y), 1.0);

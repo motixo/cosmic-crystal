@@ -119,10 +119,19 @@ distortion) to 100% (full lensing), without changing its tint or opacity.
 Clear center sets the size of the undistorted middle: lower values let lensing
 reach further inward; higher values restrict it to the edges. At 100% the entire
 surface is free of lens distortion. Blur remains independent.
+The lens follows the actual window outline through the corners, without a separate
+rounded boundary inside the glass.
 Blur, thickness, dispersion and highlights have independent controls;
 opacity remains shared. This is a shader-only interpretation, without pointer
 tracking or morphing animations. Try the source pair in Forge 0.5+ with renderer 2:
 
 ```sh
 cosmic-forge --import-pack effects/liquid-glass.json shaders/liquid-glass.frag
+```
+
+With the engine's headless preview running, verify corner continuity, lensing
+endpoints, blur and foreground preservation on real compositor output:
+
+```sh
+CRYSTAL_QA_DIR=/path/to/preview python tests/verify_liquid_corners.py
 ```
