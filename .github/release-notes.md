@@ -1,13 +1,32 @@
-Adds **Mica**, a matte material inspired by Windows 11, immediately above Aero in the official catalog.
+Adds **Void** and **Minecraft Glass** to the official COSMIC Forge shader pack.
 
-- Uses only the desktop wallpaper, excluding windows and panels underneath.
-- Follows the system light/dark theme and returns to a neutral surface when the window is inactive.
-- Includes independent **Blur** and **Wallpaper color** controls, both defaulting to 100%. Opacity remains shared with the other effects.
-- The light theme deliberately retains only a faint wallpaper tint. This is a visual reconstruction, not Microsoft's native implementation or a pixel-exact port.
-- Preserves Crystal, Aero, Liquid Glass and their existing controls and preferences.
+- **Minecraft Glass:** one thin outer frame with sparse Accent-colored pixel
+  reflections and no internal grid. Background Blur leaves the pixel texture
+  sharp; Pixel size, Texture and Theme color have separate controls.
+- **Void:** transparent infinity-mirror glass with Accent lights and parallax
+  that follows window movement. Center the window to look straight down the
+  tunnel. Adjust Reflections, Line spacing, Motion, Theme color and Glow up to
+  1000%; Blur softens both the backdrop and the light lines. Gaps widen gently
+  toward the far end.
+- Void redraws on demand instead of requesting continuous idle frames, and
+  shades only neighboring reflections. Set **Display width/height** to your
+  display's physical pixel resolution (defaults: 1920 × 1080); different-resolution
+  displays currently require manual adjustment. Standard fragment derivatives
+  are required.
+- Keeps Mica above Aero, appends the two new effects after Liquid Glass, and
+  preserves existing effect controls and shared Opacity.
 
-**Requirements:** Mica needs Forge 0.11+ and engine renderer revision 4. Displaying Mica above Aero also needs the Forge update that honors official pack order; earlier versions append new effects after the built-in presets. Older apps that do not understand wallpaper backdrops will reject the new pack and retain their installed pack.
+**Requirements:** the complete pack retains Forge 0.11+ and renderer revision 4
+from Mica. Renderer revision 5 is needed for optional wallpaper-only backdrops.
+The shader update itself does not install or replace a compositor.
 
-Install through **COSMIC Forge → Check for updates** after updating Forge and its engine as needed. The shader pack itself does not install or replace a compositor.
+Install through **COSMIC Forge → Check for updates**. If you previously imported
+development packs with the same `void` or `minecraft-glass` ids, back up and remove
+those local packs first; duplicate effect ids cannot coexist with the official pack.
 
-Validation: seven packaging tests, 25 checks on real isolated COSMIC compositor output, and GLES shader compilation variants. The render checks cover blur, wallpaper tint, light/dark mode, focus fallback, foreground preservation, clipping and text contrast. Pixel-for-pixel comparison with Windows and other GPU drivers were not separately tested.
+Validation covers packaging, GLES shader variants, real isolated compositor
+rendering, blur, tint, pixel sharpness, window movement, centering, spacing and
+Void idle behavior. NVIDIA GPU timer checks cover orientation and shader cost;
+total desktop GPU usage and performance on other drivers vary.
+
+Full details: [CHANGELOG.md](https://github.com/motixo/cosmic-forge-shaders/blob/glass-v8/CHANGELOG.md).

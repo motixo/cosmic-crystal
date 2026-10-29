@@ -40,7 +40,7 @@ class PublisherTests(unittest.TestCase):
     def test_official_bundle_contains_all_glass_shader_sources(self):
         pack = publisher.bundle(5)
         self.assertEqual(pack['revision'], 5)
-        self.assertEqual([e['id'] for e in pack['effects']], ['frosted', 'crystal', 'mica', 'aero', 'liquid-glass'])
+        self.assertEqual([e['id'] for e in pack['effects']], ['frosted', 'crystal', 'mica', 'aero', 'liquid-glass', 'minecraft-glass', 'void'])
         for effect in pack['effects'][1:]:
             self.assertEqual(effect['shader']['source'], (ROOT / 'shaders' / (effect['id'] + '.frag')).read_text())
 
@@ -58,6 +58,31 @@ class PublisherTests(unittest.TestCase):
         self.assertEqual(controls['alpha_map']['target'], 'theme')
         self.assertNotIn('window_active', effect['shader']['uniforms'])
         self.assertNotIn('is_dark', effect['shader']['uniforms'])
+
+    def test_minecraft_keeps_pixel_and_background_controls_independent(self):
+        effect = next(e for e in publisher.bundle(8)['effects'] if e['id'] == 'minecraft-glass')
+        controls = {c['key']: c for c in effect['controls']}
+        self.assertEqual(effect['shader']['base'], 'glass')
+        self.assertFalse(effect['shader'].get('animated', False))
+        self.assertEqual(effect['shader']['uniforms']['forge_blur'], 'forge_minecraft_blur')
+        self.assertEqual(controls['forge_minecraft_pixel_size']['default'], 8)
+        self.assertEqual(controls['forge_minecraft_color']['default'], 10)
+        self.assertEqual(controls['alpha_map']['target'], 'theme')
+
+    def test_void_runs_on_demand_with_display_calibration_and_shared_opacity(self):
+        effect = next(e for e in publisher.bundle(8)['effects'] if e['id'] == 'void')
+        controls = {c['key']: c for c in effect['controls']}
+        self.assertFalse(effect['shader']['animated'])
+        self.assertEqual(effect['shader']['base'], 'glass')
+        self.assertEqual(effect['shader']['uniforms']['forge_blur'], 'forge_void_blur')
+        for axis, value in [('width', 1920), ('height', 1080)]:
+            key = 'forge_void_display_' + axis
+            self.assertEqual(effect['shader']['uniforms'][key], key)
+            self.assertEqual(controls[key]['default'], value)
+            self.assertLessEqual(controls[key]['max'], 10000)
+        self.assertEqual(controls['forge_void_glow']['max'], 1000)
+        self.assertEqual(controls['forge_void_color']['default'], 0)
+        self.assertEqual(controls['alpha_map']['target'], 'theme')
 
     def test_community_metadata_and_shader_are_combined(self):
         with tempfile.TemporaryDirectory() as directory:

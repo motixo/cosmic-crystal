@@ -1,0 +1,64 @@
+{
+  "id": "minecraft-glass",
+  "name": "Minecraft Glass",
+  "tagline": "Pixel edges, clear reflections.",
+  "description": "One outer glass frame with small, sparse pixel reflections and no internal grid. The texture follows your system palette and stays sharp while Blur softens only the background.",
+  "controls": [
+    {
+      "key": "forge_minecraft_blur",
+      "label": "Blur",
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 35,
+      "unit": "%"
+    },
+    {
+      "key": "forge_minecraft_pixel_size",
+      "label": "Pixel size",
+      "type": "integer",
+      "min": 2,
+      "max": 16,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "key": "forge_minecraft_texture",
+      "label": "Texture",
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 80,
+      "unit": "%"
+    },
+    {
+      "key": "forge_minecraft_color",
+      "label": "Theme color",
+      "description": "Tint the background with your current theme color without changing the pixel texture or opacity.",
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 10,
+      "unit": "%"
+    },
+    {
+      "key": "alpha_map",
+      "label": "Opacity",
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "unit": "%",
+      "target": "theme"
+    }
+  ],
+  "shader": {
+    "base": "glass",
+    "uniforms": {
+      "forge_blur": "forge_minecraft_blur",
+      "forge_minecraft_pixel_size": "forge_minecraft_pixel_size",
+      "forge_minecraft_texture": "forge_minecraft_texture",
+      "forge_minecraft_color": "forge_minecraft_color"
+    }
+  }
+}

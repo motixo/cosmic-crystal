@@ -1,0 +1,107 @@
+{
+  "id": "void",
+  "name": "Void",
+  "tagline": "An infinity mirror that follows your window.",
+  "description": "Accent-colored light frames recede into transparent glass, with gently wider gaps toward the far end. Center the window on your configured display to look straight down the tunnel. Blur softens both glass and lines; Theme color tints the glass.",
+  "controls": [
+    {
+      "key": "forge_void_blur",
+      "label": "Blur",
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 30,
+      "unit": "%"
+    },
+    {
+      "key": "forge_void_color",
+      "label": "Theme color",
+      "description": "Tint the glass with your system theme color while keeping the lines in Accent.",
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 0,
+      "unit": "%"
+    },
+    {
+      "key": "forge_void_depth",
+      "label": "Reflections",
+      "type": "integer",
+      "min": 8,
+      "max": 32,
+      "default": 26
+    },
+    {
+      "key": "forge_void_glow",
+      "label": "Glow",
+      "type": "integer",
+      "min": 0,
+      "max": 1000,
+      "default": 85,
+      "unit": "%"
+    },
+    {
+      "key": "forge_void_spacing",
+      "label": "Line spacing",
+      "description": "Lower values bring the light frames closer together.",
+      "type": "integer",
+      "min": 25,
+      "max": 200,
+      "default": 100,
+      "unit": "%"
+    },
+    {
+      "key": "forge_void_parallax",
+      "label": "Motion",
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 80,
+      "unit": "%"
+    },
+    {
+      "key": "forge_void_display_width",
+      "label": "Display width",
+      "description": "Your display resolution in physical pixels; used to center the tunnel.",
+      "type": "integer",
+      "min": 320,
+      "max": 10000,
+      "default": 1920,
+      "unit": "px"
+    },
+    {
+      "key": "forge_void_display_height",
+      "label": "Display height",
+      "description": "Your display resolution in physical pixels; used to center the tunnel.",
+      "type": "integer",
+      "min": 240,
+      "max": 10000,
+      "default": 1080,
+      "unit": "px"
+    },
+    {
+      "key": "alpha_map",
+      "target": "theme",
+      "label": "Opacity",
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "unit": "%"
+    }
+  ],
+  "shader": {
+    "base": "glass",
+    "animated": false,
+    "uniforms": {
+      "forge_blur": "forge_void_blur",
+      "forge_void_depth": "forge_void_depth",
+      "forge_void_glow": "forge_void_glow",
+      "forge_void_parallax": "forge_void_parallax",
+      "forge_void_spacing": "forge_void_spacing",
+      "forge_void_color": "forge_void_color",
+      "forge_void_display_width": "forge_void_display_width",
+      "forge_void_display_height": "forge_void_display_height"
+    }
+  }
+}

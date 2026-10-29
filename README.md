@@ -1,7 +1,7 @@
 # COSMIC Forge Shaders
 
-Glass effects for **COSMIC Forge**: Crystal, Mica, Aero, Liquid Glass and the definition for COSMIC's
-native Frosted Glass. This is the former `cosmic-crystal` repository, renamed with
+Glass effects for **COSMIC Forge**: Crystal, Mica, Aero, Liquid Glass, Minecraft Glass,
+Void and the definition for COSMIC's native Frosted Glass. This is the former `cosmic-crystal` repository, renamed with
 its history and releases intact.
 
 [Install COSMIC Forge](https://github.com/motixo/cosmic-forge#install) with the
@@ -19,6 +19,8 @@ retained in [v0.8.0](https://github.com/motixo/cosmic-forge-shaders/tree/v0.8.0)
 - `shaders/mica.frag`: matte wallpaper tint with light/dark themes and inactive-window fallback.
 - `shaders/aero.frag`: Aero glass, reflections and theme tint.
 - `shaders/liquid-glass.frag`: curved refraction and soft edge highlights on the generic glass base.
+- `shaders/minecraft-glass.frag`: connected pixel glass with sharp Accent reflections.
+- `shaders/void.frag`: an infinity mirror with window parallax and soft light lines.
 - `shaders/glass.frag`: neutral generic glass template with independent blur.
 - `effects/*.json`: additional glass definitions and overrides for the release pack.
 - `examples/`: an importable Prism pack and a separate JSON + `.frag` example.
@@ -50,7 +52,7 @@ In the official pack, a definition with an existing id replaces that entry while
 preserving the pack's catalog order in compatible Forge versions. This keeps
 downloadable controls separate from Forge's built-in fallback catalog.
 
-Crystal, Aero and Liquid Glass have independent **Theme color** controls. They
+Crystal, Aero, Liquid Glass, Minecraft Glass and Void have independent **Theme color** controls. They
 adjust the tint strength without changing opacity. Crystal starts at 0% to retain
 its existing appearance, and its tint follows COSMIC's light or dark surface color.
 
@@ -113,6 +115,41 @@ CRYSTAL_QA_DIR=/path/to/preview python tests/verify_mica.py
 The render check uses the engine's test surface at `../engine/build/bin/test-surface`;
 set `FORGE_ENGINE_DIR` when the engine checkout is elsewhere. Release notes are in
 [CHANGELOG.md](CHANGELOG.md).
+
+## Minecraft Glass and Void
+
+**Minecraft Glass** has one outer frame and small, sparse diagonal pixel marks,
+without an internal grid. The pixel marks use the selected Accent; the outer frame
+adapts to the light/dark surface palette. **Blur** softens only the backdrop, while
+**Pixel size**, **Texture** and **Theme color** remain independent.
+
+**Void** places Accent-colored frames over transparent glass. The tunnel follows
+window movement, looks straight ahead when centered, and gently increases the
+visible gaps toward the far end. **Line spacing** sets overall separation;
+**Reflections** sets the frame count. **Glow** reaches 1000%, **Blur** softens both
+the backdrop and the lines, and **Theme color** tints the glass without recoloring
+the lights. It redraws with the desktop instead of requesting continuous idle
+animation. Its fragment shader evaluates only neighboring frames, independent of
+the selected reflection count.
+
+Set Void's **Display width** and **Display height** to the current display's
+physical pixel resolution; the defaults are 1920 × 1080. Output scaling is handled
+by the shader. Display dimensions are currently configured manually, so moving
+between displays with different resolutions may require adjusting these controls.
+Void requires standard fragment derivatives (`GL_OES_standard_derivatives`).
+
+Both effects preserve the shared **Opacity** setting. The complete official pack
+requires Forge 0.11+ and renderer revision 4 or newer because it also contains Mica;
+renderer revision 5 is needed for optional wallpaper-only backdrop selection.
+No compositor installation is part of a shader update.
+
+Run their render checks against the engine's **headless** preview in private XDG:
+
+```sh
+CRYSTAL_QA_DIR=/path/to/preview python tests/verify_minecraft.py
+VOID_QA_DIR=/path/to/preview python tests/verify_void.py
+VOID_QA_DIR=/path/to/preview python tests/verify_void_idle.py
+```
 
 ## Generic glass
 
