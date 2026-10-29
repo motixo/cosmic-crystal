@@ -1,0 +1,45 @@
+{
+  "id": "mica",
+  "name": "Mica",
+  "tagline": "A quiet surface, colored by your wallpaper.",
+  "description": "An opaque, softly tinted material inspired by Windows 11 Mica. Only the wallpaper colors the active window; inactive windows return to a neutral light or dark surface.",
+  "controls": [
+    {
+      "key": "forge_mica_blur",
+      "label": "Blur",
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 100,
+      "unit": "%"
+    },
+    {
+      "key": "forge_mica_color",
+      "label": "Wallpaper color",
+      "description": "How much of the wallpaper's color reaches the material. Zero gives a solid neutral surface.",
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 100,
+      "unit": "%"
+    },
+    {
+      "key": "alpha_map",
+      "target": "theme",
+      "label": "Opacity",
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "unit": "%"
+    }
+  ],
+  "shader": {
+    "base": "glass",
+    "backdrop": "wallpaper",
+    "uniforms": {
+      "forge_blur": "forge_mica_blur",
+      "forge_mica_color": "forge_mica_color"
+    }
+  }
+}

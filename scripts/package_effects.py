@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+OFFICIAL_ORDER = ['frosted', 'crystal', 'mica', 'aero', 'liquid-glass']
 
 
 def bundle(revision, catalog=None, pack_id='cosmic-glass', shaders=None):
@@ -19,6 +20,8 @@ def bundle(revision, catalog=None, pack_id='cosmic-glass', shaders=None):
                     break
             else:
                 effects.append(effect)
+        effects.sort(key=lambda effect: OFFICIAL_ORDER.index(effect['id'])
+                     if effect['id'] in OFFICIAL_ORDER else len(OFFICIAL_ORDER))
     for effect in effects:
         shader = (shaders or ROOT / 'shaders') / (effect['id'] + '.frag')
         if shader.exists():

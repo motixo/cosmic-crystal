@@ -1,6 +1,6 @@
 # COSMIC Forge Shaders
 
-Glass effects for **COSMIC Forge**: Crystal, Aero, Liquid Glass and the definition for COSMIC's
+Glass effects for **COSMIC Forge**: Crystal, Mica, Aero, Liquid Glass and the definition for COSMIC's
 native Frosted Glass. This is the former `cosmic-crystal` repository, renamed with
 its history and releases intact.
 
@@ -16,6 +16,7 @@ retained in [v0.8.0](https://github.com/motixo/cosmic-forge-shaders/tree/v0.8.0)
 
 - `effects.json`: built-in effect descriptions and controls.
 - `shaders/crystal.frag`: Crystal refraction, frost and Everyday mode.
+- `shaders/mica.frag`: matte wallpaper tint with light/dark themes and inactive-window fallback.
 - `shaders/aero.frag`: Aero glass, reflections and theme tint.
 - `shaders/liquid-glass.frag`: curved refraction and soft edge highlights on the generic glass base.
 - `shaders/glass.frag`: neutral generic glass template with independent blur.
@@ -46,8 +47,8 @@ start with `forge_`; source is limited to 64 KiB. See the Prism example for a
 complete definition. A complete pack can also be imported through Forge settings,
 or select its JSON metadata and `.frag` together.
 In the official pack, a definition with an existing id replaces that entry while
-preserving its position. This keeps downloadable controls separate from Forge's
-built-in fallback catalog.
+preserving the pack's catalog order in compatible Forge versions. This keeps
+downloadable controls separate from Forge's built-in fallback catalog.
 
 Crystal, Aero and Liquid Glass have independent **Theme color** controls. They
 adjust the tint strength without changing opacity. Crystal starts at 0% to retain
@@ -88,6 +89,30 @@ Its pinned commit supplies built-in definitions at compile time; installed apps
 download release packs independently of Git.
 
 GPL-3.0-only. Independent project; COSMIC is developed by System76 and its contributors.
+
+## Mica
+
+Mica is an interpretation of [Microsoft's Mica material](https://learn.microsoft.com/en-us/windows/apps/design/style/mica).
+It uses only the wallpaper behind the window, with broad diffusion and subtle color
+on an opaque neutral surface. It follows the actual system light/dark mode; an
+inactive window returns to a neutral surface. The light theme intentionally shows
+only a faint wallpaper tint. This is a visual reconstruction, not Microsoft's
+native compositor implementation or a pixel-exact port.
+
+**Blur** and **Wallpaper color** are independent Mica controls, both defaulting to
+100%. Wallpaper color at 0% gives a solid neutral surface. **Opacity** remains the
+shared COSMIC theme control. Mica requires **Forge 0.11+ and renderer revision 4**.
+The official catalog places it immediately above Aero; displaying the pack's order
+also requires a Forge version that honors the official catalog order.
+
+```sh
+cosmic-forge --import-pack effects/mica.json shaders/mica.frag
+CRYSTAL_QA_DIR=/path/to/preview python tests/verify_mica.py
+```
+
+The render check uses the engine's test surface at `../engine/build/bin/test-surface`;
+set `FORGE_ENGINE_DIR` when the engine checkout is elsewhere. Release notes are in
+[CHANGELOG.md](CHANGELOG.md).
 
 ## Generic glass
 

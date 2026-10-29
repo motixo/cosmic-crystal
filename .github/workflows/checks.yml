@@ -35,4 +35,4 @@ jobs:
           python scripts/package_effects.py --revision "${TAG#glass-v}"
           gh release create "$TAG" build/effects/cosmic-forge-glass.json \
             --verify-tag --latest --title "Forge glass pack ${TAG#glass-v}" \
-            --notes "Adds Liquid Glass with curved lensing, adjustable clear center, blur, thickness, chromatic dispersion, highlights and theme color. Includes Crystal, Aero and native Frosted Glass definitions. Liquid Glass requires Forge 0.5+ and renderer revision 2. Shader data only; no compositor or Settings installer."
+            --notes-file .github/release-notes.md

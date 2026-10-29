@@ -40,9 +40,24 @@ class PublisherTests(unittest.TestCase):
     def test_official_bundle_contains_all_glass_shader_sources(self):
         pack = publisher.bundle(5)
         self.assertEqual(pack['revision'], 5)
-        self.assertEqual([e['id'] for e in pack['effects']], ['frosted', 'crystal', 'aero', 'liquid-glass'])
+        self.assertEqual([e['id'] for e in pack['effects']], ['frosted', 'crystal', 'mica', 'aero', 'liquid-glass'])
         for effect in pack['effects'][1:]:
             self.assertEqual(effect['shader']['source'], (ROOT / 'shaders' / (effect['id'] + '.frag')).read_text())
+
+    def test_mica_uses_wallpaper_and_keeps_its_controls_independent(self):
+        effect = next(e for e in publisher.bundle(7)['effects'] if e['id'] == 'mica')
+        self.assertEqual(effect['shader']['base'], 'glass')
+        self.assertEqual(effect['shader']['backdrop'], 'wallpaper')
+        self.assertEqual(effect['shader']['uniforms'], {
+            'forge_blur': 'forge_mica_blur',
+            'forge_mica_color': 'forge_mica_color',
+        })
+        controls = {c['key']: c for c in effect['controls']}
+        self.assertEqual(controls['forge_mica_blur']['default'], 100)
+        self.assertEqual(controls['forge_mica_color']['default'], 100)
+        self.assertEqual(controls['alpha_map']['target'], 'theme')
+        self.assertNotIn('window_active', effect['shader']['uniforms'])
+        self.assertNotIn('is_dark', effect['shader']['uniforms'])
 
     def test_community_metadata_and_shader_are_combined(self):
         with tempfile.TemporaryDirectory() as directory:
