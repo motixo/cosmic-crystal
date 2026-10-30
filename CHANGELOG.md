@@ -1,5 +1,45 @@
 # Changelog
 
+## glass-v9 — 2026-10-30
+
+### Void: automatic monitor geometry
+
+- Read the current monitor's dimensions and the window's position directly from
+  the engine. Keep the tunnel straight when the window is centered, including
+  on rotated and fractionally scaled outputs.
+- Update perspective automatically when moving between monitors. Remove manual
+  Display width/height controls while preserving the other saved Void controls.
+- Remove the fragment-derivative requirement by using output-local coordinates.
+- Keep redraws on demand, with no continuous animation when the window is still.
+
+### Ember: animated flame glass
+
+- Add rising orange and red flames, adapted from trinketMage's Shadertoy effect
+  with source attribution retained.
+- Add independent Background opacity beneath the flames, plus Flame strength,
+  Flame size, Theme color and Blur controls. Keep shared Opacity unchanged.
+- Opt into animation; Forge builds with the per-effect Animation switch can
+  freeze the flames and stop continuous redraws.
+
+### Snow: snowfall that settles on each window
+
+- Add layered flakes with varied sizes, speeds, spacing and sideways drift.
+- Accumulate snow from the bottom until it covers the glass, using a separate
+  clock for each window. Moving, resizing or opening another window does not
+  restart an existing snowbank.
+- Give settled snow subtle powder relief and a softly shaded edge that stays
+  still and sharp independently of backdrop Blur.
+- Add Snow accumulation on/off, Fill time, Snowfall and Flake size controls.
+  Disabling accumulation leaves falling snow active; re-enabling it restores
+  the bank at the window's current age.
+
+Install **engine-v0.6.0 / renderer revision 7** and sign out and back in before
+using pack 9. The per-effect Animation switch also needs a Forge build containing
+that app control; it is not in stable Forge 0.11.2. Shader ABI remains 1.
+Other effects and shared Opacity are preserved. Development packs with duplicate
+`ember` or `snow` effect ids must be backed up and removed before the official pack
+can be installed. Ember retains its upstream licensing notice; see CREDITS.md.
+
 ## glass-v8 — 2026-10-29
 
 - Add **Minecraft Glass**: a thin outer frame and sparse connected-glass pixel

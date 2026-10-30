@@ -1,0 +1,74 @@
+{
+  "id": "ember",
+  "name": "Ember",
+  "tagline": "Soft flames moving across your glass.",
+  "description": "Rising orange and red flames inspired by trinketMage\u2019s Shadertoy effect. Turn Animation off for a still surface, or blend the flames with your theme accent.",
+  "controls": [
+    {
+      "key": "forge_ember_background",
+      "label": "Background opacity",
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "unit": "%"
+    },
+    {
+      "key": "forge_ember_blur",
+      "label": "Blur",
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 30,
+      "unit": "%"
+    },
+    {
+      "key": "forge_ember_strength",
+      "label": "Flame strength",
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 85,
+      "unit": "%"
+    },
+    {
+      "key": "forge_ember_scale",
+      "label": "Flame size",
+      "type": "integer",
+      "min": 25,
+      "max": 200,
+      "default": 100,
+      "unit": "%"
+    },
+    {
+      "key": "forge_ember_color",
+      "label": "Theme color",
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 0,
+      "unit": "%"
+    },
+    {
+      "key": "alpha_map",
+      "target": "theme",
+      "label": "Opacity",
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "unit": "%"
+    }
+  ],
+  "shader": {
+    "base": "glass",
+    "animated": true,
+    "uniforms": {
+      "forge_ember_background": "forge_ember_background",
+      "forge_blur": "forge_ember_blur",
+      "forge_ember_strength": "forge_ember_strength",
+      "forge_ember_scale": "forge_ember_scale",
+      "forge_ember_color": "forge_ember_color"
+    }
+  }
+}

@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
-// Infinity mirror; framebuffer coordinates follow motion without idle animation.
+// Infinity mirror; output-local geometry follows motion without idle animation.
 #version 100
 //_DEFINES_
-#extension GL_OES_standard_derivatives : require
 #if defined(EXTERNAL)
 #extension GL_OES_EGL_image_external : require
 #endif
@@ -31,8 +30,8 @@ uniform float forge_void_glow;
 uniform float forge_void_parallax;
 uniform float forge_void_spacing;
 uniform float forge_void_color;
-uniform float forge_void_display_width;
-uniform float forge_void_display_height;
+uniform vec2 output_size;
+uniform vec2 surface_position;
 
 const float depth_curve = 1.06;
 
@@ -46,7 +45,6 @@ float stroke(float distance_to_line, float width, float aa, float blur) {
 
 void main() {
     vec2 g = (input_to_geo * vec3(v_coords, 1.0)).xy;
-    vec2 direction = vec2(dFdx(g.x), dFdy(g.y));
     if (alpha <= 0.0) discard;
     if (g.x < 0.0 || g.y < 0.0 || g.x > 1.0 || g.y > 1.0) discard;
     vec2 p = g * geo_size;
@@ -65,13 +63,9 @@ void main() {
     color.a = 1.0;
     #endif
     vec3 backdrop = color.rgb / max(color.a, 0.0001);
-    // Screen pixels preserve parallax without opting into continuous animation.
-    float scale = max(output_scale, 0.001);
-    vec2 screen_center = 0.5 * vec2(forge_void_display_width, forge_void_display_height) / scale;
-    vec2 screen_pixel = gl_FragCoord.xy / scale;
-    // DRM and nested output framebuffers can have opposite axis orientations.
-    screen_pixel = mix(2.0 * screen_center - screen_pixel, screen_pixel, step(vec2(0.0), direction));
-    vec2 offset = screen_pixel - p + geo_size * 0.5 - screen_center;
+    // Output-local geometry keeps the tunnel centered on its current monitor.
+    vec2 screen_center = 0.5 * max(output_size, vec2(1.0));
+    vec2 offset = surface_position + geo_size * 0.5 - screen_center;
     vec2 position = offset / (abs(offset) + max(geo_size * 0.5, vec2(1.0)));
     float motion = clamp(forge_void_parallax / 100.0, 0.0, 1.0);
     vec2 view = motion * position * 0.65;

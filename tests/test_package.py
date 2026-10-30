@@ -40,7 +40,7 @@ class PublisherTests(unittest.TestCase):
     def test_official_bundle_contains_all_glass_shader_sources(self):
         pack = publisher.bundle(5)
         self.assertEqual(pack['revision'], 5)
-        self.assertEqual([e['id'] for e in pack['effects']], ['frosted', 'crystal', 'mica', 'aero', 'liquid-glass', 'minecraft-glass', 'void'])
+        self.assertEqual([e['id'] for e in pack['effects']], ['frosted', 'crystal', 'mica', 'aero', 'liquid-glass', 'minecraft-glass', 'void', 'ember', 'snow'])
         for effect in pack['effects'][1:]:
             self.assertEqual(effect['shader']['source'], (ROOT / 'shaders' / (effect['id'] + '.frag')).read_text())
 
@@ -69,20 +69,47 @@ class PublisherTests(unittest.TestCase):
         self.assertEqual(controls['forge_minecraft_color']['default'], 10)
         self.assertEqual(controls['alpha_map']['target'], 'theme')
 
-    def test_void_runs_on_demand_with_display_calibration_and_shared_opacity(self):
-        effect = next(e for e in publisher.bundle(8)['effects'] if e['id'] == 'void')
+    def test_void_uses_output_geometry_without_idle_animation_or_manual_calibration(self):
+        effect = next(e for e in publisher.bundle(9)['effects'] if e['id'] == 'void')
         controls = {c['key']: c for c in effect['controls']}
         self.assertFalse(effect['shader']['animated'])
         self.assertEqual(effect['shader']['base'], 'glass')
         self.assertEqual(effect['shader']['uniforms']['forge_blur'], 'forge_void_blur')
-        for axis, value in [('width', 1920), ('height', 1080)]:
+        for axis in ['width', 'height']:
             key = 'forge_void_display_' + axis
-            self.assertEqual(effect['shader']['uniforms'][key], key)
-            self.assertEqual(controls[key]['default'], value)
-            self.assertLessEqual(controls[key]['max'], 10000)
+            self.assertNotIn(key, effect['shader']['uniforms'])
+            self.assertNotIn(key, controls)
+            self.assertNotIn(key, effect['shader']['source'])
+        for name in ['output_size', 'surface_position']:
+            self.assertIn('uniform vec2 ' + name + ';', effect['shader']['source'])
+            self.assertNotIn(name, effect['shader']['uniforms'])
         self.assertEqual(controls['forge_void_glow']['max'], 1000)
         self.assertEqual(controls['forge_void_color']['default'], 0)
         self.assertEqual(controls['alpha_map']['target'], 'theme')
+
+    def test_ember_has_independent_background_and_animated_flames(self):
+        effect = next(e for e in publisher.bundle(9)['effects'] if e['id'] == 'ember')
+        controls = {c['key']: c for c in effect['controls']}
+        self.assertTrue(effect['shader']['animated'])
+        self.assertEqual(effect['shader']['base'], 'glass')
+        self.assertEqual(effect['shader']['uniforms']['forge_blur'], 'forge_ember_blur')
+        self.assertEqual(controls['forge_ember_background']['default'], 50)
+        self.assertEqual(controls['forge_ember_color']['default'], 0)
+        self.assertEqual(controls['alpha_map']['target'], 'theme')
+        self.assertIn('uniform float time;', effect['shader']['source'])
+
+    def test_snow_uses_window_age_and_optional_accumulation(self):
+        effect = next(e for e in publisher.bundle(9)['effects'] if e['id'] == 'snow')
+        controls = {c['key']: c for c in effect['controls']}
+        self.assertTrue(effect['shader']['animated'])
+        self.assertEqual(effect['shader']['base'], 'glass')
+        self.assertEqual(effect['shader']['uniforms']['forge_blur'], 'forge_snow_blur')
+        self.assertEqual(controls['forge_snow_accumulation']['type'], 'boolean')
+        self.assertTrue(controls['forge_snow_accumulation']['default'])
+        self.assertEqual(controls['forge_snow_fill_time']['default'], 180)
+        self.assertEqual(controls['alpha_map']['target'], 'theme')
+        self.assertIn('uniform float window_age;', effect['shader']['source'])
+        self.assertNotIn('window_age', effect['shader']['uniforms'])
 
     def test_community_metadata_and_shader_are_combined(self):
         with tempfile.TemporaryDirectory() as directory:

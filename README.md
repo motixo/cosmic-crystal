@@ -1,7 +1,7 @@
 # COSMIC Forge Shaders
 
 Glass effects for **COSMIC Forge**: Crystal, Mica, Aero, Liquid Glass, Minecraft Glass,
-Void and the definition for COSMIC's native Frosted Glass. This is the former `cosmic-crystal` repository, renamed with
+Void, Ember, Snow and the definition for COSMIC's native Frosted Glass. This is the former `cosmic-crystal` repository, renamed with
 its history and releases intact.
 
 [Install COSMIC Forge](https://github.com/motixo/cosmic-forge#install) with the
@@ -21,6 +21,8 @@ retained in [v0.8.0](https://github.com/motixo/cosmic-forge-shaders/tree/v0.8.0)
 - `shaders/liquid-glass.frag`: curved refraction and soft edge highlights on the generic glass base.
 - `shaders/minecraft-glass.frag`: connected pixel glass with sharp Accent reflections.
 - `shaders/void.frag`: an infinity mirror with window parallax and soft light lines.
+- `shaders/ember.frag`: animated flames with independent background opacity.
+- `shaders/snow.frag`: drifting snow and optional accumulation on each window.
 - `shaders/glass.frag`: neutral generic glass template with independent blur.
 - `effects/*.json`: additional glass definitions and overrides for the release pack.
 - `examples/`: an importable Prism pack and a separate JSON + `.frag` example.
@@ -90,7 +92,9 @@ Forge's source checkout includes this repository as the `shaders` Git submodule.
 Its pinned commit supplies built-in definitions at compile time; installed apps
 download release packs independently of Git.
 
-GPL-3.0-only. Independent project; COSMIC is developed by System76 and its contributors.
+GPL-3.0-only except Ember's adapted flame code, which retains its upstream
+CC-BY-NC-SA notice and attribution; see [CREDITS.md](CREDITS.md).
+Independent project; COSMIC is developed by System76 and its contributors.
 
 ## Mica
 
@@ -132,16 +136,16 @@ the lights. It redraws with the desktop instead of requesting continuous idle
 animation. Its fragment shader evaluates only neighboring frames, independent of
 the selected reflection count.
 
-Set Void's **Display width** and **Display height** to the current display's
-physical pixel resolution; the defaults are 1920 × 1080. Output scaling is handled
-by the shader. Display dimensions are currently configured manually, so moving
-between displays with different resolutions may require adjusting these controls.
-Void requires standard fragment derivatives (`GL_OES_standard_derivatives`).
+Void now reads the current monitor's logical dimensions and the window's
+output-local position from the engine. Rotation, fractional scaling and moving
+between monitors are handled automatically; manual **Display width/height**
+controls are no longer needed. A centered window looks straight down the tunnel.
+This also removes the previous dependency on standard fragment derivatives.
 
-Both effects preserve the shared **Opacity** setting. The complete official pack
-requires Forge 0.11+ and renderer revision 4 or newer because it also contains Mica;
-renderer revision 5 is needed for optional wallpaper-only backdrop selection.
-No compositor installation is part of a shader update.
+Both effects preserve the shared **Opacity** setting. Pack 9 requires
+**engine-v0.6.0 / renderer revision 7** for Void's automatic geometry; install it
+through **Settings → Patches** and sign out and back in before using this pack.
+Shader updates download separately from the engine.
 
 Run their render checks against the engine's **headless** preview in private XDG:
 
@@ -150,6 +154,32 @@ CRYSTAL_QA_DIR=/path/to/preview python tests/verify_minecraft.py
 VOID_QA_DIR=/path/to/preview python tests/verify_void.py
 VOID_QA_DIR=/path/to/preview python tests/verify_void_idle.py
 ```
+
+## Ember and Snow
+
+**Ember** brings rising orange and red flames to transparent glass, adapted from
+[trinketMage's Shadertoy effect](https://www.shadertoy.com/view/3tcBzH).
+**Background opacity** blends a theme-colored backing beneath the flames without
+changing shared Opacity. **Flame strength**, **Flame size**, **Theme color** and
+background **Blur** have independent controls.
+
+**Snow** has several layers of flakes with varied speed, size and sideways drift.
+A softly textured snowbank grows from the bottom until it fills the background.
+Each window starts its own accumulation when the effect first renders on it.
+**Fill time** controls the buildup from 10 to 3600 seconds; **Snowfall**, **Flake
+size** and **Blur** remain independent. Turn **Snow accumulation** off to keep
+falling flakes without a settled bank; turning it back on restores the bank at
+the window's current age. Opaque foreground content stays visible.
+
+Both effects opt into engine animation. Forge builds with per-effect animation
+controls can turn **Animation** off for a still surface and stop continuous
+redraws. This app control is not included in stable Forge 0.11.2. Snow needs
+renderer 6+ for its independent window clock; the complete pack needs renderer 7
+for Void. Existing effect ids, control keys and shared Opacity are preserved.
+
+If you imported the development `ember-local` or `snow-local` packs, back them up
+and remove those local packs before installing the official update: duplicate
+effect ids cannot coexist. Keep your saved effect preferences.
 
 ## Generic glass
 

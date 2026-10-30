@@ -42,7 +42,7 @@ def grab(name=None):
 
 def select(blur=30, depth=26, glow=85, motion=80, spacing=100, color=0, source=SOURCE, animated=None):
     values = dict(forge_void_blur=blur, forge_void_depth=depth,
-                  forge_void_glow=glow, forge_void_parallax=motion, forge_void_spacing=spacing, forge_void_color=color, forge_void_display_width=1280, forge_void_display_height=900)
+                  forge_void_glow=glow, forge_void_parallax=motion, forge_void_spacing=spacing, forge_void_color=color)
     params = ','.join('(key:' + json.dumps(key) + ',name:' + json.dumps(name)
                       + ',value:' + str(float(values[key])) + ')'
                       for name, key in EFFECT['shader']['uniforms'].items())

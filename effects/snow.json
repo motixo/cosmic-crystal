@@ -1,0 +1,71 @@
+{
+  "id": "snow",
+  "name": "Snow",
+  "tagline": "Snowfall that settles as each window stays open.",
+  "description": "Snow builds up from the bottom until the window background is covered. Each window starts a new snowbank when this effect first appears on it.",
+  "controls": [
+    {
+      "key": "forge_snow_accumulation",
+      "label": "Snow accumulation",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "key": "forge_snow_fill_time",
+      "label": "Fill time",
+      "type": "integer",
+      "min": 10,
+      "max": 3600,
+      "default": 180,
+      "unit": " s"
+    },
+    {
+      "key": "forge_snow_density",
+      "label": "Snowfall",
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 75,
+      "unit": "%"
+    },
+    {
+      "key": "forge_snow_size",
+      "label": "Flake size",
+      "type": "integer",
+      "min": 50,
+      "max": 200,
+      "default": 100,
+      "unit": "%"
+    },
+    {
+      "key": "forge_snow_blur",
+      "label": "Blur",
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 15,
+      "unit": "%"
+    },
+    {
+      "key": "alpha_map",
+      "target": "theme",
+      "label": "Opacity",
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "unit": "%"
+    }
+  ],
+  "shader": {
+    "base": "glass",
+    "animated": true,
+    "uniforms": {
+      "forge_blur": "forge_snow_blur",
+      "forge_snow_fill_time": "forge_snow_fill_time",
+      "forge_snow_density": "forge_snow_density",
+      "forge_snow_size": "forge_snow_size",
+      "forge_snow_accumulation": "forge_snow_accumulation"
+    }
+  }
+}

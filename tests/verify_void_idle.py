@@ -15,7 +15,6 @@ SAVED = {p: p.read_bytes() if p.exists() else None
 SOURCE = (ROOT / 'shaders/void.frag').read_text()
 EFFECT = json.loads((ROOT / 'effects/void.json').read_text())
 defaults = {c['key']: c['default'] for c in EFFECT['controls']}
-defaults.update(forge_void_display_width=1280, forge_void_display_height=900)
 params = ','.join('(key:' + json.dumps(key) + ',name:' + json.dumps(name)
                   + ',value:' + str(float(defaults[key])) + ')'
                   for name, key in EFFECT['shader']['uniforms'].items())
